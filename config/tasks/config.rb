@@ -1,3 +1,5 @@
+require 'shell'
+
 @containers.each do |container_name, container|
   namespace container_name do
     desc "Configure Container:#{container_name}"
@@ -248,10 +250,19 @@ def config_redmine(container_name, container_config)
   end
 
   puts "Redmine Internal Setting Start"
-  tmp_path = File.join(container_config['container_path'], 'rootfs/tmp')
-  FileUtils.copy('assets/redmine_setup.sh', tmp_path)
+  #tmp_path = File.join(container_config['container_path'], 'rootfs/tmp')
+  #FileUtils.copy('assets/redmine_setup.sh', tmp_path)
 
   container.attach wait: true do
-    LXC.run_command('bash /tmp/redmine_setup.sh')
+    #LXC.run_command('bash /tmp/redmine_setup.sh')
+    sh = Shell.new
+    Shell.def_system_command("bundle")
+    Shell.def_system_command("service")
+    sh.service("mysqld","start")
+    sh.cd("/var/lib/redmine")
+
+    print sh.bundle("install","--without","development","test","rmagick")
+    print sh.bundle("exec","rake","generate_secret_token")
+    print sh.bundle("exec","rake","db:migrate","RAILS_ENV=production")
   end
 end
