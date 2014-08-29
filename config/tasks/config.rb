@@ -253,13 +253,12 @@ def config_redmine(container_name, container_config)
 
   container.attach wait: true do
     sh = Shell.new
-    Shell.def_system_command("bundle")
-    Shell.def_system_command("service")
-    sh.service("mysqld","start")
+
+    sh.system("service","mysqld","start")
     sh.cd("/var/lib/redmine")
 
-    print sh.bundle("install","--without","development","test","rmagick")
-    print sh.bundle("exec","rake","generate_secret_token")
-    print sh.bundle("exec","rake","db:migrate","RAILS_ENV=production")
+    print sh.system("bundle","install","--without","development","test","rmagick")
+    print sh.system("bundle","exec","rake","generate_secret_token")
+    print sh.system("bundle","exec","rake","db:migrate","RAILS_ENV=production")
   end
 end
