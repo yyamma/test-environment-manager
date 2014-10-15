@@ -123,7 +123,8 @@ def get_commands_to_install_nagios_server3():
     SCRIPT_URL = "https://raw.githubusercontent.com/project-hatohol/test-environment-manager/creator/creator/script/import_NDOUtils3.sh"
     SCRIPT_NAME = "import_NDOUtils3.sh"
     CMDS = [["yum", "install", "-y", "httpd", "mysql-server",
-             "nagios", "nagios-plugins-all", "ndoutils-mysql"],
+             "nagios", "nagios-plugins-all", "ndoutils-mysql",
+             "nrpe", "nagios-plugins-nrpe"],
             ["service", "mysqld", "start"],
             ["chkconfig", "mysqld", "on"],
             ["mysql", "-uroot", "-e",
