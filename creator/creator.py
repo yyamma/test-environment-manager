@@ -149,6 +149,8 @@ def get_commands_to_install_nagios_server4():
     PLUGIN_NAME = "nagios-plugins-2.0.tar.gz"
     NDOUTILS_URL = "http://downloads.sourceforge.net/project/nagios/ndoutils-2.x/ndoutils-2.0.0/ndoutils-2.0.0.tar.gz"
     NDOUTILS_NAME = "ndoutils-2.0.0.tar.gz"
+    NRPE_URL = "http://downloads.sourceforge.net/project/nagios/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz"
+    NRPE_NAME = "nrpe-2.15.tar.gz"
     SCRIPT_URL = "https://raw.githubusercontent.com/project-hatohol/test-environment-manager/creator/creator/script/make_Nagios4.sh"
     SCRIPT_NAME = "make_Nagios4.sh"
     CMDS = [["yum", "install", "-y", "mysql-server", "mysql-devel",
@@ -163,10 +165,12 @@ def get_commands_to_install_nagios_server4():
             ["wget", NAGIOS_URL],
             ["wget", PLUGIN_URL],
             ["wget", NDOUTILS_URL],
+            ["wget", NRPE_URL],
             ["useradd", "nagios"],
             ["tar", "zxvf", NAGIOS_NAME],
             ["tar", "zxvf", PLUGIN_NAME],
             ["tar", "zxvf", NDOUTILS_NAME],
+            ["tar", "zxvf", NRPE_NAME]
             ["curl", "-O", SCRIPT_URL],
             ["chmod", "+x", SCRIPT_NAME],
             ["./" + SCRIPT_NAME],
