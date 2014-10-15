@@ -8,6 +8,10 @@ sys.path.append("../common")
 import definevalue
 from utils import *
 import clone
+import requests
+import json
+import apport
+import encodings.idna
 
 def prepare_setup_zabbix_server(argument):
     print("Not implemented yet: prepare_setup_zabbix_server")
@@ -98,6 +102,15 @@ def run_setup_redmine(argument):
     subprocess.call("mysql -uroot db_redmine < my_setting", shell = True)
     subprocess.call("chown -R apache /var/lib/redmine", shell = True)
     subprocess.call("chgrp -R apache /var/lib/redmine", shell = True)
+
+    subprocess.call("service httpd restart",shell = True)
+
+    project_data = {"project": {"name": "First project","identifier":"hatohol"}}
+
+    send_data = json.dumps(project_data)
+    responce = requests.post("http://127.0.0.1/projects.json", data = send_data,
+                             headers = {"Content-Type": "application/json"},
+                             auth = ("admin", "admin"))
 
 
 def prepare_setup_fluentd(argument):
