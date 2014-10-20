@@ -5,6 +5,10 @@ import shutil
 import subprocess
 import yaml
 import lxc
+import requests
+import json
+import apport
+import encodings.idna
 sys.path.append("../common")
 import definevalue
 from utils import *
@@ -235,12 +239,61 @@ def run_setup_nagios_nrpe(argument):
 
 
 def prepare_setup_redmine(argument):
-    print("Not implemented yet: prepare_setup_redmine")
+    file_list = ["database.yml", "configuration.yml", "my_setting",
+                 "setting_command.sh"]
+
+    for file_name in file_list:
+        read_file = open("assets/" + file_name)
+        lines = read_file.readlines()
+        read_file.close()
+
+        argument.append(lines)
+
     return argument
 
 
+def create_setup_file(file_path, argument):
+    file = open(file_path, "w")
+    file.writelines(argument)
+    file.close()
+
+
+def print_request_responce(request_result):
+    if request_result.status_code == 201:
+        print("Successed to create a new project")
+
+    else:
+        print("Failed to create a new project.")
+        print(request_result.text + "\n")
+
+
 def run_setup_redmine(argument):
-    print("Not implemented yet: run_setup_redmine")
+    os.chdir("/var/lib/redmine")
+
+    file_paths = ["/var/lib/redmine/config/database.yml",
+                  "/var/lib/redmine/config/configuration.yml",
+                  "/var/lib/redmine/my_setting",
+                  "/var/lib/redmine/setting_command.sh"]
+
+    project_info = argument[0]
+    project_data = {"project": {"name": project_info["project_name"],
+                      "identifier": project_info["project_id"]}}
+
+    send_data = json.dumps(project_data)
+
+    for each_path_and_argument in range(len(file_paths)):
+        create_setup_file(file_paths[each_path_and_argument],
+                          argument[each_path_and_argument + 1])
+
+    subprocess.call(["sh","setting_command.sh"])
+
+    request_result = requests.post("http://127.0.0.1/projects.json",
+                                   data = send_data,
+                                   headers = {"Content-Type": "application/json"},
+                                   auth = ("admin", "admin"))
+    print_request_responce(request_result)
+
+    subprocess.call(["service", "httpd", "restart"])
 
 
 def prepare_setup_fluentd(argument):
