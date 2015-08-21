@@ -25,6 +25,16 @@ You must install yaml package, yum and lxc.
 
 It begin to install for test-environment-manager.
 
+## Setting
+
+### Set gateway
+
+First, you must set gateway.
+
+Please setup "sample.yml".
+
+       $ sudo python3 start_clone_setup.py sample.yml
+
 ## How to use
 
 Please refer to How_to_use_lxc_container_manager_tools.pdf in manager.
